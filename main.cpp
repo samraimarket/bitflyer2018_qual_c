@@ -26,8 +26,9 @@ size_t find(size_t min, size_t mid, size_t max, size_t const end) {
 
 inline
 size_t startFind(size_t start, size_t end) {
-    if ((X[end - 1] - X[start]) <= D) return end;
-    return find(start, (start + end) / 2, end, end);
+    if ((X[end] - X[end - 1]) > D) return end;
+    size_t ret = find(start, (start + end) / 2, end - 1, end);
+    return ret;
 }
 int main() {
  
