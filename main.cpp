@@ -16,7 +16,8 @@ void inputRangeData(size_t const i) {
     }
 }
 
-inline find(size_t min, size_t mid, size_t max, size_t end) {
+inline
+size_t find(size_t min, size_t mid, size_t max, size_t end) {
 
     if ((X[end] - X[mid]) > D) {
         min = mid;
