@@ -1,48 +1,20 @@
 #include <iostream>
 #include <algorithm>
 using namespace std;
-uint64_t *X, *Y, *minMemo;
+uint64_t *X, *Y;
 size_t N, D;
 
 inline 
-void inputRangeData(size_t const i) {
+void inputRangeData(size_t const i, size_t& min) {
     
-    Y[i] = 0;
-    minMemo[i] = N;
     if (0 == i) return;
 
-    for (size_t j =  i - 1; (X[i] - X[j]) <= D; j--) {
-        Y[i]++;
-        if (j == 0) break;
+    for (size_t j =  min; j < i; j++) {
+        if ((X[i] - X[j]) > D) min = j;
+        else Y[j]++;
     }
 }
 
-inline
-size_t find(size_t min, size_t max, size_t end) {
-    if (minMemo[end] != N) return minMemo[end];
-
-    size_t mid = (min + end) / 2;
-    while((mid > min)) {
-        if ((X[end] - X[mid]) > D) {
-            min = mid;
-            mid = (mid + max) / 2;
-        } else {
-            if ((X[end] - X[mid - 1]) > D) return mid;
-            max = mid;
-            mid = (mid + min) / 2 ;
-        }
-    }
-    minMemo[end] = mid;
-    return minMemo[end];
-}
-
-inline
-size_t  startFind(size_t start, size_t end) {
-
-    if ((X[end] - X[end - 1]) > D) return end;
-    find(start, end, end);
-    return minMemo[end];
-}
 
 int main() {
  
@@ -51,26 +23,30 @@ int main() {
     uint64_t array[N];
     X = array;
     
-    uint64_t array2[N];
+    uint64_t array2[N] = {0}; 
     Y = array2;
 
-    uint64_t array3[N];
-    minMemo = array3;
-
+    size_t minimum = 0;
     for (size_t i = 0; i < N; i++) {
          cin >> X[i];
-         inputRangeData(i);
+         inputRangeData(i, minimum);
     }
 
     size_t ret = 0;
-    for (size_t k = 2; k < N; k++) {
+    for (size_t i = 0; i < N - 2; i++) {
+        if (N <= (i + Y[i] + 1)) break;
+        if (Y[i] == 0) continue;        
 
-        for (size_t j = startFind(k - Y[k], k); j < k; j++) {
-            size_t i_min = j - Y[j];
-            size_t const i_max = min<uint64_t>(k - Y[k], j);
-            if (i_min >= i_max) break;
-            i_min = find(i_min, i_max, j);
-            ret += i_max - i_min;
+        size_t const j_min = i + 1;
+        size_t const j_max = min<size_t>(N - 2, i + Y[i]);
+        if (Y[j_max] == 0) continue;        
+
+        size_t const k_max = j_max + Y[j_max];
+        size_t const k_min = j_max + 1;
+        if (k_max < k_min) break;
+
+        for (size_t j = j_min; j <= j_max; j++) {
+            ret += (j + Y[j]) - j_max;
         }
     }
     cout << ret << endl;
