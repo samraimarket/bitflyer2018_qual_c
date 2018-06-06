@@ -1,8 +1,7 @@
 #include <iostream>
 #include <algorithm>
 using namespace std;
-uint64_t* X;
-uint64_t* Y;
+uint64_t *X, *Y;
 size_t N, D;
 
 inline 
@@ -20,12 +19,12 @@ void inputRangeData(size_t const i) {
 inline find(size_t min, size_t mid, size_t max, size_t end) {
 
     if ((X[end] - X[mid]) > D) {
-        max = mid;
-        mid = (mid + min) / 2 ;
-    } else {
-        if ((X[end] - X[mid - 1]) > D) return mid;
         min = mid;
         mid = (mid + max) / 2;
+    } else {
+        if (((X[end] - X[mid - 1]) > D) || (mid == min)) return mid;
+        max = mid;
+        mid = (mid + min) / 2 ;
     }
     
     return find(min, mid, max, end);    
@@ -56,16 +55,12 @@ int main() {
 
     size_t ret = 0;
     for (size_t k = N - 1; 2 <= k; k--) {
-        for (size_t j = startFind(1, k); j < k; j++) {
-            size_t i_min = j - Y[j];
-
-            if ((X[k] - X[i_min]) <= D) continue;
-            size_t i_max = j - 1;
-            if (i_min <= i_max) {
-                cout << '(' << i_min << ',' << i_max << ')' << j << ' ' << k <<endl;
-                ret += i_max - i_min + 1;
-
-            }
+        for (size_t j = startFind(k - Y[k], k); j < k; j++) {
+            size_t const i_min = j - Y[j];
+            size_t const i_max = startFind(i_min, k)- 1;
+            if ((X[k] - X[i_max]) <= D) continue;
+            cout << '(' << i_min << ',' << i_max << ')' << j << ' ' << k <<endl;
+            ret += i_max - i_min + 1;
 
         }
     }
