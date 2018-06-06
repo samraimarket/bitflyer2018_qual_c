@@ -19,6 +19,7 @@ void inputRangeData(size_t const i) {
 
 inline
 size_t find(size_t min, size_t mid, size_t max, size_t end) {
+    if (minMemo[end] != N) return minMemo[end];
 
     if ((X[end] - X[mid]) > D) {
         min = mid;
@@ -36,6 +37,7 @@ inline
 size_t  startFind(size_t start, size_t end) {
 
     if ((X[end] - X[end - 1]) > D) return end;
+    
     if (minMemo[end] == N) minMemo[end] = find(start, (start + end) / 2, end, end);
     return minMemo[end];
 }
@@ -64,7 +66,7 @@ int main() {
         for (size_t j = startFind(k - Y[k], k); j < k; j++) {
             size_t i_min = j - Y[j];
             size_t const i_max = min<uint64_t>(k - Y[k], j);
-            if (i_min >= i_max) continue;
+            if (i_min >= i_max) break;
             i_min = find(i_min, (i_max + i_min) / 2, i_max, j);
             ret += i_max - i_min;
         }
