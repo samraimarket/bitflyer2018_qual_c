@@ -57,10 +57,10 @@ int main() {
     for (size_t k = N - 1; 2 <= k; k--) {
         for (size_t j = startFind(k - Y[k], k); j < k; j++) {
             size_t const i_min = j - Y[j];
-            size_t const i_max = startFind(i_min, k)- 1;
-            if ((X[k] - X[i_max]) <= D) continue;
-            cout << '(' << i_min << ',' << i_max << ')' << j << ' ' << k <<endl;
-            ret += i_max - i_min + 1;
+            size_t const i_max = startFind(i_min, k);
+            if (i_max == 0) continue;
+            if ((X[k] - X[i_max - 1]) <= D) continue;
+            ret += i_max - i_min;
 
         }
     }
